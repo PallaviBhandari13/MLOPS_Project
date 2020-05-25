@@ -11,7 +11,6 @@ import tensorflow as tf
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 
 import matplotlib.pyplot as plt
-%matplotlib inline 
 image_index = 7777 
 print(y_train[image_index]) 
 plt.imshow(x_train[image_index], cmap='Greys')
