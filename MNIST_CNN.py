@@ -29,9 +29,6 @@ y_test = np_utils.to_categorical(y_test)
 
 n_classes = y_test.shape[1]
 
-# Set Kernel Size
-kernel_size = (ker_size,ker_size)
-
 # Creating model
 model = Sequential()
 
