@@ -67,4 +67,4 @@ model.fit(x_train, y_train,
 #Accuracy
 score = model.evaluate(x_test, y_test, verbose=1)
 print("\nAccuracy is :-\n") 
-print(int(scores[1] * 100))
+print(int(score[1] * 100))
