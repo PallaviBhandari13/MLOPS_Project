@@ -10,16 +10,11 @@ from keras.layers import Conv2D, MaxPooling2D
 import tensorflow as tf
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 
-import matplotlib.pyplot as plt
-image_index = 7777 
-print(y_train[image_index]) 
-plt.imshow(x_train[image_index], cmap='Greys')
-
 x_train.shape
 
 batch_size = 128
 num_classes = 10
-epochs = 12
+epochs = 1
 
 # input image dimensions
 img_rows, img_cols = 28, 28
@@ -69,14 +64,7 @@ model.fit(x_train, y_train,
           epochs=epochs,
           verbose=1,
           validation_data=(x_test, y_test))
-
-score = model.evaluate(x_test, y_test, verbose=0)
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
-
-#Test the model
-
-image_index = 3174
-plt.imshow(x_test[image_index].reshape(28, 28),cmap='Greys')
-pred = model.predict(x_test[image_index].reshape(1, img_rows, img_cols, 1))
-print(pred.argmax())
+#Accuracy
+score = model.evaluate(x_test, y_test, verbose=1)
+print("\nAccuracy is :-\n") 
+print(int(scores[1] * 100))
