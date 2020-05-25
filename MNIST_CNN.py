@@ -1,78 +1,86 @@
-from __future__ import print_function
-import keras
-from keras.datasets import mnist
+import keras, sys
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Dense, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
+from keras.datasets import mnist
+from keras.utils import np_utils
 
-import tensorflow as tf
-(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+# Loading MNIST Dataset
+(x_train, y_train), (x_test, y_test)  = mnist.load_data()
 
+# Finding No. of Rows and Columns
+rows_of_img = x_train[0].shape[0]
+cols_of_img = x_train[1].shape[0]
 
-x_train.shape
+# store the shape of a single image 
+input_shape = (rows_of_img, cols_of_img, 1)
 
-batch_size = 128
-num_classes = 10
-epochs = 12
-
-img_rows, img_cols = 28, 28
-
-# the data, split between train and test sets
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
-
-x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
-x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
-input_shape = (img_rows, img_cols, 1)
-
+# change our image type to float32 data type
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
+
+# Featuring Scaling - Normalization
 x_train /= 255
 x_test /= 255
-print('x_train shape:', x_train.shape)
-print(x_train.shape[0], 'train samples')
-print(x_test.shape[0], 'test samples')
 
-# convert class vectors to binary class matrices
-y_train = keras.utils.to_categorical(y_train, num_classes)
-y_test = keras.utils.to_categorical(y_test, num_classes)
+# Doing One-Hot Encoding
+y_train = np_utils.to_categorical(y_train)
+y_test = np_utils.to_categorical(y_test)
 
-#Add layers
+n_classes = y_test.shape[1]
 
+# Set Kernel Size
+kernel_size = (ker_size,ker_size)
+
+# Creating model
 model = Sequential()
-model.add(Conv2D(32, kernel_size=(3, 3),
-                 activation='relu',
-                 input_shape=input_shape))
-model.add(Conv2D(64, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+
+# Adding CRP layers
+model.add(Conv2D(20,kernel_size,padding="same",input_shape=input_shape))
+model.add(Activation("relu"))
+model.add(MaxPooling2D(pool_size=(2,2)))
+
+count = 1
+while count <= crp_count:
+    model.add(Conv2D(50,kernel_size,padding="same"))
+    model.add(Activation("relu"))
+    model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2)))
+    count+=1
+    
+# FC
 model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(num_classes, activation='softmax'))
 
-model.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.Adadelta(),
-              metrics=['accuracy'])
+count = 1
+while count <= fc_count:
+    model.add(Dense(500))
+    model.add(Activation("relu"))
+    count+=1
+    
+model.add(Dense(n_classes))
+model.add(Activation("softmax")) 
 
+model.compile(loss="categorical_crossentropy", optimizer=keras.optimizers.Adadelta(),metrics=['accuracy'])
 
-#Fit the model
-model.fit(x_train, y_train,
+print(model.summary())
+
+# Conerting Images to 4D
+x_train = x_train.reshape(x_train.shape[0], rows_of_img, cols_of_img, 1)
+x_test = x_test.reshape(x_test.shape[0], rows_of_img, cols_of_img, 1)
+
+# Training Parameters
+batch_size = batch_size_passed
+epochs = no_of_epochs
+
+history = model.fit(x_train, y_train,
           batch_size=batch_size,
           epochs=epochs,
-          verbose=1,
-          validation_data=(x_test, y_test))
+          validation_data=(x_test, y_test), 
+          shuffle=True)
 
+model.save("mnist_LeNet.h5")   
 
-score = model.evaluate(x_test, y_test, verbose=0)
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
-
-
-#Test the model
-
-image_index = 3174
-plt.imshow(x_test[image_index].reshape(28, 28),cmap='Greys')
-pred = model.predict(x_test[image_index].reshape(1, img_rows, img_cols, 1))
-print(pred.argmax())
-
+# Evaluating the accuracy
+scores = model.evaluate(x_test, y_test, verbose=1) 
+print("\nAccuracy is :-\n") 
+print(int(scores[1] * 100)) 
 
