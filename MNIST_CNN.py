@@ -80,7 +80,7 @@ while count <= crp_count:
 model.add(Flatten())
 
 count = 1
-    while count <= fc_count:
+while count <= fc_count:
     model.add(Dense(500))
     model.add(Activation("relu"))
     count+=1
