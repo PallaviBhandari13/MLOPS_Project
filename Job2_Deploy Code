@@ -1,0 +1,27 @@
+if sudo cat /root/MLOps_Task/MNIST_CNN.py | grep keras
+then
+	if ! sudo /usr/bin/docker ps -a | grep cnn_container
+    then
+    	sudo docker run -dit --name cnn_container pyos:latest
+    elif ! sudo /usr/bin/docker ps -a | grep cnn_container | grep up
+    then
+    	sudo docker start cnn_container
+    fi
+    sudo docker exec cnn_container rm -dfr /root/MLOps_Task
+    
+    sudo docker cp /root/MLOps_Task cnn_container:/root/
+    
+    
+elif sudo cat /root/MLOps_Task/MNIST_CNN.py | grep sklearn
+then
+	if ! sudo /usr/bin/docker ps -a | grep sklearn_container
+    then
+    	sudo docker run -dit --name sklearn_container pyos:latest
+    elif ! sudo /usr/bin/docker ps -a | grep sklearn_container | grep up
+    then
+    	sudo docker start sklearn_container
+    fi
+    sudo docker exec sklearn_container rm -dfr /root/MLOps_Task
+    
+    sudo docker cp /root/MLOps_Task sklearn_container:/root/
+fi
